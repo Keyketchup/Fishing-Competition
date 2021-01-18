@@ -1,0 +1,5 @@
+name: FishingCompetition
+main: main.Main
+version: 1.0
+api-version: 1.13
+description: Fishing
