@@ -1,12 +1,14 @@
 package main;
 
-import java.security.PublicKey;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,26 +18,30 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+class FishData {
+	public String name;
+	public float minSize;
+	public float maxSize;
+	public Material fishMaterial;
+	public ChatColor chatColor;
+	
+	public FishData(String _name, float _minSize, float _maxSize, Material _fishMaterial, ChatColor _chatColor) {
+		name = _name;
+		minSize = _minSize;
+		maxSize = _maxSize;
+		fishMaterial = _fishMaterial;
+		chatColor = _chatColor;
+	}
+}
+
 public class Main extends JavaPlugin implements Listener{
 
-	private String fishOneName = null;
 	private float fishOneSize = -1f;
+	private Constants ConstData = new Constants();
 	
-	private float sizeMin = 0.1f;
-	private float sizeMax = 180f;
-		
-	private String[] fishTypes1 = {"Haddock", "John Dory", "Brill", "Lobstar", "Blue Cod", "Bluenose", "Bluefish", "Northern Pike", "Sea Perch", "Squid", "Rainbow Trout", "Bluegill", "Zander", "Europian Bass", "Largemouth Bass", "Northern Red Snapper", "Pollack", "Atlantic Mackerel", "Common Carp", "Chum Salmon", "Guppy", "Goldfish", "Blue Tang", "Swordfish", "Neon Tetra", "Creeperfish", "Common Molly", "Freshwater Angelfish"};
-	private String[] fishTypes2 = {"Stripped Bass", "Freshwater Eal", "Monkfish", "Hoki", "Angler", "Atlantic Cod", "Garfish", "Europian Perch", "Zombiefish", "Wels Catfish", "Atlantic Salmon", "Starfish"};
-	private String[] fishTypes3 = {"Ocean Sunfish", "Ghost Shark", "Southern Bluefin Tuna","Atlantic Bluefin Tuna", "Skeletonfish", "Great White Shark", "Blue Shark", "Salmon Shark", "Giant Oceanic Manta Ray", "Bull Shark"};
-	private String[] fishTypes4 = {"Whale Shark", "White Shark", "Red Shark", "Blue Shark", "Withered Shark", "Green Shark", "A Legendary Pufferfish", "A Legendary Starfish", "A Legendary Salmon", "A Legendary Cod" ,"A Legendary Snapper"};
-	private String[] treasureTypes1 = {"Toy Car", "Broken Toy Robot", "Diary of Wimpy Potato", "Terminator DVD", "Finding the Nemo DVD", "Dumbo DVD", "Bambi DVD", "Phone Case", "Toy Boat", "Mario Figure", "Computer-Written Letter from India", "Donkey Kong Figure", "Empty Treasure Chest", "Statue Of Llama", "Statue Of Rabbit", "Statue of Creeper", "Statue of Zombie", "Statue of Skeleton", "Fake Diamond"};
-	private String[] treasureTypes2 = {"Viking Boat Fragment", "Egyptian Diamond", "Steve's Missing Jewlery", "Pirate's Eyepatch", "Chest full of gold", "Piece of Long-written Music", "Egyptian Clay Doll", "Limited Version of Monopoly", "Diary of a Everlasting Creeper", "Limited Toy Car", "Miniature Christmas Tree", "Statue of Spider Jokey", "Statue of Wither", "Statue of Ender Dragon", "Broken Piece of an Everlasting Mana Pool"};
-	
-	private int[] fishPercentage = {20, 30, 35, 40, 42, 43};
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "The Fishing Competition Plugin Started");
-		Bukkit.getConsoleSender().sendMessage("The number is.. " + fishPercentage.length);
 	}
 	
 	public void onDisable() {
@@ -64,111 +70,73 @@ public class Main extends JavaPlugin implements Listener{
 		
 		if(ev.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
 			
-			String[] _fishTypes;
+			ev.getCaught().remove();
 			
-			String _fishName = null;
-			ChatColor _fishColor = ChatColor.BLUE;
 			int Num = 0;
             float _size = 0f;
-            String _sizeRounded = null;
-            
-            //물고기를 없앰
-            ev.getCaught().remove();
-            
             Random r = new Random();
-            Material _fishMaterial = null;
             
-            int _numLimit = fishPercentage[fishPercentage.length-1];
+            int _numLimit = ConstData.fishPercentage[ConstData.fishPercentage.length-1];
             
             Num = r.nextInt(_numLimit);
-            if(Num<fishPercentage[0]){
-            	sizeMax = 2f;
-            	sizeMin = 40f;
-            	_fishTypes = new String[fishTypes1.length];
-            	for(int i=0;i<fishTypes1.length;i++) {
-            		_fishTypes[i] = fishTypes1[i];
-            	}
-            	_fishMaterial = Material.SALMON;
-            	_fishColor = ChatColor.WHITE;
+            FishData fishData = new FishData(null, 0, 0, Material.AIR, ChatColor.WHITE);
+            
+            if(Num<ConstData.fishPercentage[0]){
+            	fishData = new FishData((ConstData.fishTypes1[r.nextInt(ConstData.fishTypes1.length)]), ConstData.minSizeArr[0], ConstData.maxSizeArr[0], ConstData.fishMaterialArr[0], ConstData.fishColorArr[0]);
             }
-            else if(Num<fishPercentage[1]){
-            	sizeMax = 20f;
-            	sizeMin = 140f;
-            	_fishTypes = new String[fishTypes2.length];
-            	for(int i=0;i<fishTypes2.length;i++) {
-            		_fishTypes[i] = fishTypes2[i];
-            	}
-            	_fishMaterial = Material.COD;
-            	_fishColor = ChatColor.GREEN;
+            else if(Num<ConstData.fishPercentage[1]){
+            	fishData = new FishData((ConstData.fishTypes2[r.nextInt(ConstData.fishTypes2.length)]), ConstData.minSizeArr[1], ConstData.maxSizeArr[1], ConstData.fishMaterialArr[1], ConstData.fishColorArr[1]);
             }
-            else if(Num<fishPercentage[2]){
-            	sizeMax = 90f;
-            	sizeMin = 200f;
-            	_fishTypes = new String[fishTypes3.length];
-            	for(int i=0;i<fishTypes3.length;i++) {
-            		_fishTypes[i] = fishTypes3[i];
-            	}
-            	_fishMaterial = Material.TROPICAL_FISH;
-            	_fishColor = ChatColor.AQUA;
+            else if(Num<ConstData.fishPercentage[2]){
+            	fishData = new FishData((ConstData.fishTypes3[r.nextInt(ConstData.fishTypes3.length)]), ConstData.minSizeArr[2], ConstData.maxSizeArr[2], ConstData.fishMaterialArr[2], ConstData.fishColorArr[2]);
             }
-            else if(Num<fishPercentage[3]){
-            	sizeMax = 1f;
-            	sizeMin = 2f;
-            	_fishTypes = new String[treasureTypes1.length];
-            	for(int i=0;i<treasureTypes1.length;i++) {
-            		_fishTypes[i] = treasureTypes1[i];
-            	}
-            	_fishMaterial = Material.MINECART;
-            	_fishColor = ChatColor.YELLOW;
+            else if(Num<ConstData.fishPercentage[3]){
+            	fishData = new FishData((ConstData.treasureTypes1[r.nextInt(ConstData.treasureTypes1.length)]), ConstData.minSizeArr[3], ConstData.maxSizeArr[3], ConstData.fishMaterialArr[3], ConstData.fishColorArr[3]);
             }
-            else if(Num<fishPercentage[4]){
-            	sizeMax = 1f;
-            	sizeMin = 2f;
-            	_fishTypes = new String[treasureTypes2.length];
-            	for(int i=0;i<treasureTypes2.length;i++) {
-            		_fishTypes[i] = treasureTypes2[i];
-            	}
-            	_fishMaterial = Material.CHEST_MINECART;
-            	_fishColor = ChatColor.RED;
+            else if(Num<ConstData.fishPercentage[4]){
+            	fishData = new FishData((ConstData.treasureTypes2[r.nextInt(ConstData.treasureTypes2.length)]), ConstData.minSizeArr[4], ConstData.maxSizeArr[4], ConstData.fishMaterialArr[4], ConstData.fishColorArr[4]);
             }
             else{
-            	sizeMax = 160f;
-            	sizeMin = 300f;
-            	_fishTypes = new String[fishTypes4.length];
-            	for(int i=0;i<fishTypes4.length;i++) {
-            		_fishTypes[i] = fishTypes4[i];
-            	}
-            	_fishMaterial = Material.PUFFERFISH;
-            	_fishColor = ChatColor.LIGHT_PURPLE;
+            	fishData = new FishData((ConstData.fishTypes4[r.nextInt(ConstData.fishTypes4.length)]), ConstData.minSizeArr[5], ConstData.maxSizeArr[5], ConstData.fishMaterialArr[5], ConstData.fishColorArr[5]);
             }
             
-            _fishName = _fishTypes[r.nextInt(_fishTypes.length)];
-            _size = sizeMin + r.nextFloat() * (sizeMax - sizeMin);
+            _size = fishData.minSize + r.nextFloat() * (fishData.maxSize - fishData.minSize);
             _size = (float)Math.round(_size*100f)/100f;            
             
-            Bukkit.broadcastMessage("You Caught " + _fishName + "!");
+            Bukkit.broadcastMessage("You Caught " + fishData.name + "!");
             
-            ItemStack _fish = new ItemStack(_fishMaterial, 1);
+            ItemStack _fish = new ItemStack(fishData.fishMaterial, 1);
             ItemMeta _fishMeta = _fish.getItemMeta();
-            _fishMeta.setDisplayName(_fishColor + _fishName + " (" + _size + "kg)");
+            _fishMeta.setDisplayName(fishData.chatColor + fishData.name + " (" + _size + "kg)");
             _fishMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, isEnabled());
             _fish.setItemMeta(_fishMeta);
             _player.getInventory().addItem(_fish);
 
             if (_size > fishOneSize) {
-            	
-                Bukkit.broadcastMessage(ChatColor.GREEN + _player.getName() + ChatColor.AQUA + " caught a fish weighting " + Float.toString(_size) + "kg and became the first!");
-                
-                /* 1등의 플레이어 이름과 1등 물고기 사이즈를 바꾸기 */
-                fishOneSize = _size;
-                fishOneName = _player.getName();
+            	Change1stPlayer(_size, _player);
             }
             else {
-            	Bukkit.broadcastMessage(ChatColor.GRAY + _player.getName() + "caught a " + _fishName + " (" + Float.toString(_size) + "kg)");
+            	Bukkit.broadcastMessage(ChatColor.GRAY + _player.getName() + "caught a " + fishData.name + " (" + Float.toString(_size) + "kg)");
             }
         }
-			
+		
 	}
 	
+	private void Change1stPlayer(float _size, Player _player) {
+		Bukkit.broadcastMessage(ChatColor.GREEN + _player.getName() + ChatColor.AQUA + " caught a fish weighting " + Float.toString(_size) + "kg and became the first!");
+		/* 1등의 플레이어 이름과 1등 물고기 사이즈를 바꾸기 */
+		
+		ArmorStand _stand;
+		_stand = (ArmorStand) _player.getWorld().spawnEntity(_player.getLocation(), EntityType.ARMOR_STAND);
+		_stand.setVisible(true);
+        _stand.setGravity(false);
+        _stand.getEquipment().setHelmet(new ItemStack(Material.PLAYER_HEAD));
+		
+		for(Player _p : getServer().getOnlinePlayers()) {
+			_p.playSound(_p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
+		}
+		
+        fishOneSize = _size;
+	}
 	
 }
