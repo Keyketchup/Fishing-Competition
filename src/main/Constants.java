@@ -5,7 +5,9 @@ import org.bukkit.Material;
 
 public class Constants {
 	
-	final public String[][] fishTypes = {
+	final public static String pluginName = "Fishing Competition";
+	
+	final public static String[][] fishTypes = {
 			{"Haddock", "John Dory", "Brill", "Lobstar", "Blue Cod", "Bluenose", "Bluefish", "Northern Pike", "Sea Perch", "Squid", "Rainbow Trout", "Bluegill", "Zander", "Europian Bass", "Largemouth Bass", "Bala Shark", "Atlantic Silverside", "Bitterling", "Oregon Chub", "Northern Red Snapper", "Pollack", "Atlantic Mackerel", "Common Carp", "Chum Salmon", "Guppy", "Goldfish", "Blue Tang", "Swordfish", "Neon Tetra", "Creeperfish", "Common Molly", "Freshwater Angelfish"},
 			{"Stripped Bass", "Freshwater Eal", "Monkfish", "Hoki", "Angler", "Atlantic Cod", "Garfish", "Europian Perch", "Zombiefish", "Wels Catfish", "Atlantic Salmon", "Starfish"},
 			{"Ocean Sunfish", "Ghost Shark", "Southern Bluefin Tuna","Atlantic Bluefin Tuna", "Skeletonfish", "Great White Shark", "Blue Shark", "Salmon Shark", "Giant Oceanic Manta Ray", "Bull Shark"},
@@ -14,10 +16,10 @@ public class Constants {
 			{"Whale Shark", "White Shark", "Red Shark", "Blue Shark", "Withered Shark", "Green Shark", "A Legendary Pufferfish", "A Legendary Starfish", "A Legendary Salmon", "A Legendary Cod" ,"A Legendary Snapper"}
 	};
 	
-	final public int[] fishPercentage = {20, 30, 35, 40, 42, 43};
+	final public static int[] fishPercentage = {20, 30, 35, 40, 42, 43};
 	
-	final public int[] minSizeArr = {2, 20, 90, 1, 2, 160};
-	final public int[] maxSizeArr = {40, 140, 200, 2, 3, 300};
-	final public Material[] fishMaterialArr = {Material.SALMON, Material.COD, Material.TROPICAL_FISH, Material.MINECART, Material.CHEST_MINECART, Material.PUFFERFISH};
-	final public ChatColor[] fishColorArr = {ChatColor.WHITE, ChatColor.GREEN, ChatColor.AQUA, ChatColor.YELLOW, ChatColor.RED, ChatColor.LIGHT_PURPLE};
+	final public static int[] minSizeArr = {2, 20, 90, 1, 2, 160};
+	final public static int[] maxSizeArr = {40, 140, 200, 2, 3, 300};
+	final public static Material[] fishMaterialArr = {Material.SALMON, Material.COD, Material.TROPICAL_FISH, Material.MINECART, Material.CHEST_MINECART, Material.PUFFERFISH};
+	final public static ChatColor[] fishColorArr = {ChatColor.WHITE, ChatColor.GREEN, ChatColor.AQUA, ChatColor.YELLOW, ChatColor.RED, ChatColor.LIGHT_PURPLE};
 }
