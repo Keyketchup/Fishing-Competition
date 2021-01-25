@@ -7,8 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -81,23 +79,11 @@ public class Main extends JavaPlugin implements Listener{
             Num = r.nextInt(_numLimit);
             FishData fishData = new FishData(null, 0, 0, Material.AIR, ChatColor.WHITE);
             
-            if(Num<ConstData.fishPercentage[0]){
-            	fishData = new FishData((ConstData.fishTypes1[r.nextInt(ConstData.fishTypes1.length)]), ConstData.minSizeArr[0], ConstData.maxSizeArr[0], ConstData.fishMaterialArr[0], ConstData.fishColorArr[0]);
-            }
-            else if(Num<ConstData.fishPercentage[1]){
-            	fishData = new FishData((ConstData.fishTypes2[r.nextInt(ConstData.fishTypes2.length)]), ConstData.minSizeArr[1], ConstData.maxSizeArr[1], ConstData.fishMaterialArr[1], ConstData.fishColorArr[1]);
-            }
-            else if(Num<ConstData.fishPercentage[2]){
-            	fishData = new FishData((ConstData.fishTypes3[r.nextInt(ConstData.fishTypes3.length)]), ConstData.minSizeArr[2], ConstData.maxSizeArr[2], ConstData.fishMaterialArr[2], ConstData.fishColorArr[2]);
-            }
-            else if(Num<ConstData.fishPercentage[3]){
-            	fishData = new FishData((ConstData.treasureTypes1[r.nextInt(ConstData.treasureTypes1.length)]), ConstData.minSizeArr[3], ConstData.maxSizeArr[3], ConstData.fishMaterialArr[3], ConstData.fishColorArr[3]);
-            }
-            else if(Num<ConstData.fishPercentage[4]){
-            	fishData = new FishData((ConstData.treasureTypes2[r.nextInt(ConstData.treasureTypes2.length)]), ConstData.minSizeArr[4], ConstData.maxSizeArr[4], ConstData.fishMaterialArr[4], ConstData.fishColorArr[4]);
-            }
-            else{
-            	fishData = new FishData((ConstData.fishTypes4[r.nextInt(ConstData.fishTypes4.length)]), ConstData.minSizeArr[5], ConstData.maxSizeArr[5], ConstData.fishMaterialArr[5], ConstData.fishColorArr[5]);
+            for(int i=0; i<ConstData.fishPercentage.length; i++) {
+	            if(Num<ConstData.fishPercentage[i]){
+	            	fishData = new FishData((ConstData.fishTypes[i][r.nextInt(ConstData.fishTypes[i].length)]), ConstData.minSizeArr[i], ConstData.maxSizeArr[i], ConstData.fishMaterialArr[i], ConstData.fishColorArr[i]);
+	            	break;
+	            }
             }
             
             _size = fishData.minSize + r.nextFloat() * (fishData.maxSize - fishData.minSize);
@@ -113,7 +99,7 @@ public class Main extends JavaPlugin implements Listener{
             _player.getInventory().addItem(_fish);
 
             if (_size > fishOneSize) {
-            	Change1stPlayer(_size, _player);
+            	Change1stPlayer(_size, _player, fishData.name);
             }
             else {
             	Bukkit.broadcastMessage(ChatColor.GRAY + _player.getName() + "caught a " + fishData.name + " (" + Float.toString(_size) + "kg)");
@@ -122,15 +108,16 @@ public class Main extends JavaPlugin implements Listener{
 		
 	}
 	
-	private void Change1stPlayer(float _size, Player _player) {
+	private void Change1stPlayer(float _size, Player _player, String _fishName) {
 		Bukkit.broadcastMessage(ChatColor.GREEN + _player.getName() + ChatColor.AQUA + " caught a fish weighting " + Float.toString(_size) + "kg and became the first!");
 		/* 1등의 플레이어 이름과 1등 물고기 사이즈를 바꾸기 */
 		
-		ArmorStand _stand;
-		_stand = (ArmorStand) _player.getWorld().spawnEntity(_player.getLocation(), EntityType.ARMOR_STAND);
-		_stand.setVisible(true);
-        _stand.setGravity(false);
-        _stand.getEquipment().setHelmet(new ItemStack(Material.PLAYER_HEAD));
+		ItemStack _item = new ItemStack(Material.BOOK);
+		ItemMeta _itemMeta = _item.getItemMeta();
+		_itemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Catched " + _fishName + " (" + _size + ") and broke the record");
+		_itemMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+		_item.setItemMeta(_itemMeta);
+		_player.getInventory().addItem(_item);
 		
 		for(Player _p : getServer().getOnlinePlayers()) {
 			_p.playSound(_p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
