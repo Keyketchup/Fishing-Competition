@@ -16,9 +16,27 @@ class FishingLog {
 		time = _time;
 	}
 }
+
+class ServerBestFishInfo {
+	public String playerName;
+	public String fishName;
+	public float fishSize;
+	
+	public ServerBestFishInfo() {
+		playerName = null;
+		fishName = null;
+		fishSize = 0;
+	}
+}
+
 class BestFishInfo {
 	public String name;
 	public float size;
+	
+	public BestFishInfo(String _name, float _size) {
+		name = _name;
+		size = _size;
+	}
 }
 
 public class User {

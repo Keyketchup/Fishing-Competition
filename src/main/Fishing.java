@@ -52,21 +52,13 @@ public class Fishing{
             _fish.setItemMeta(_fishMeta);
             _player.getInventory().addItem(_fish);
             
-            User _user = FileController.ReadUserData(_player);
-            //Bukkit.getConsoleSender().sendMessage(Float.toString(_user.info.size));
-            //_player.sendMessage(_user.info.name + "\n" + Float.toString(_user.info.size));
+            FileController.WriteUserData(_player, new BestFishInfo(fishData.name, _size));
 
-            if (_size > fishOneSize) {
-            	Change1stPlayer(_size, _player, fishData.name);
-            }
-            else {
-            	Bukkit.broadcastMessage(ChatColor.GRAY + _player.getName() + "caught a " + fishData.name + " (" + Float.toString(_size) + "kg)");
-            }
         }
 		
 	}
 	
-	private void Change1stPlayer(float _size, Player _player, String _fishName) {
+	public static void Change1stPlayer(float _size, Player _player, String _fishName) {
 		Bukkit.broadcastMessage(ChatColor.GREEN + _player.getName() + ChatColor.AQUA + " caught a fish weighting " + Float.toString(_size) + "kg and became the first!");
 		/* 1등의 플레이어 이름과 1등 물고기 사이즈를 바꾸기 */
 		
@@ -80,6 +72,5 @@ public class Fishing{
 			_p.playSound(_p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
 		}
 		
-        fishOneSize = _size;
 	}
 }
