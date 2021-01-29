@@ -1,9 +1,7 @@
 package main;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
@@ -48,7 +46,7 @@ public class FileController {
 	public static void CreateUserData(Player player) {
 		
 		String dirPath = "plugins/" + "Fishing Competition" + "/Users/";
-		File dir = new File(dirPath);
+		CreateDefaultData();
 		
 		String userDirPath = dirPath + player.getName();
 		File userDir = new File(userDirPath);
@@ -60,14 +58,13 @@ public class FileController {
 				
 				String bestFishInfoPath = userDirPath + bestFishInfoFileName;
 				String fishingLogPath = userDirPath + fishingLogFileName;
-				
+							
 				BufferedWriter fw = new BufferedWriter(new FileWriter(bestFishInfoPath, true));
 				fw.write("Empty\n0");
 				fw.flush();
 				fw.close();
 				
 				fw = new BufferedWriter(new FileWriter(fishingLogPath, true));
-				/*Input Default Data*/
 				fw.close();
 				
 			}
@@ -88,7 +85,29 @@ public class FileController {
 	}
 	
 	public static void WriteUserData(User userData) {
-		
+		try {
+			String dirPath = "plugins/" + "Fishing Competition" + "/Users/";
+			String userDirPath = dirPath + userData.player.getName();
+			
+			String fishingLogPath = userDirPath + fishingLogFileName;
+			BufferedWriter _writer = new BufferedWriter(new FileWriter(fishingLogPath));
+			
+			for(int i=0;i<userData.log.size();i++) {
+				if(i!=0) {
+					_writer.newLine();
+				}
+				_writer.write(userData.log.get(i).name);
+				_writer.newLine();
+				_writer.write(Float.toString(userData.log.get(i).size));
+				_writer.newLine();
+				_writer.write(userData.log.get(i).time.toString());
+			}
+			
+			_writer.close();
+		}
+		catch(Exception ex) {
+			Bukkit.getConsoleSender().sendMessage(ex.getMessage());
+		}
 	}
 	
 	public static User ReadUserData(Player player) {
@@ -105,40 +124,40 @@ public class FileController {
 		
 		try {
 			
-			/* Todo Read bestFishReader */
-			
 			Scanner scan = new Scanner(bestFishInfo);
 			String bestFishName = scan.nextLine();
+			Bukkit.getConsoleSender().sendMessage(bestFishName);
 			float bestFishSize = scan.nextFloat();
+			Bukkit.getConsoleSender().sendMessage(Float.toString(bestFishSize));
 			
 			res.info.name = bestFishName;
 			res.info.size = bestFishSize;
 			
-			/*Code*/
+			Bukkit.getConsoleSender().sendMessage("1");
 			
 			scan.close();
-			
-			/* Todo Read fishingLogReader */
+			Bukkit.getConsoleSender().sendMessage("1");
 			
 			scan = new Scanner(fishingLog);
+			
+			Bukkit.getConsoleSender().sendMessage("1");
+			
 			while(scan.hasNext()) {
 				String name = scan.nextLine();
 				float size = scan.nextFloat();
+				Bukkit.getConsoleSender().sendMessage(Float.toString(size));
 				SimpleDateFormat time = new SimpleDateFormat(scan.nextLine());
 				
-				/* Todo Make list and Save */
-				
+				res.log.add(new FishingLog(name, size, time));						
 			}
-			
-			/*Code*/
-			
+						
 			scan.close();
 			
 		}
 		catch(Exception Ex) {
-			
+			//Bukkit.getConsoleSender().sendMessage(Ex.getMessage());
 		}
-		
+		//Bukkit.getConsoleSender().sendMessage(res.info.name);
 		return res;
 	}
 	

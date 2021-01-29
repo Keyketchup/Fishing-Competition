@@ -66,9 +66,7 @@ public class Main extends JavaPlugin implements Listener{
 	
 	@EventHandler
 	private void DropItem(PlayerDropItemEvent ev) {
-		if(ev.getItemDrop() == new ItemStack(Material.FISHING_ROD)) {
-			ev.setCancelled(true);
-		}
+		ev.setCancelled(true);
 	}
 	
 	@EventHandler

@@ -53,7 +53,8 @@ public class Fishing{
             _player.getInventory().addItem(_fish);
             
             User _user = FileController.ReadUserData(_player);
-            _player.sendMessage(_user.info.name + "   " + _user.info.size);
+            //Bukkit.getConsoleSender().sendMessage(Float.toString(_user.info.size));
+            //_player.sendMessage(_user.info.name + "\n" + Float.toString(_user.info.size));
 
             if (_size > fishOneSize) {
             	Change1stPlayer(_size, _player, fishData.name);
@@ -75,7 +76,6 @@ public class Fishing{
 		_itemMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
 		_item.setItemMeta(_itemMeta);
 		_player.getInventory().addItem(_item);
-		
 		for(Player _p : Bukkit.getServer().getOnlinePlayers()) {
 			_p.playSound(_p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
 		}
